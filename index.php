@@ -30,8 +30,10 @@
   		<section id='appView' class='pt-3'></section>
 
   		<!-- Campos para comunicar unas pantallas con otras -->
-		<input type='hidden' id='globalTaskId'>
-		<input type='hidden' id='globalTaskDesc'>
+		<input type='hidden' id='globalTaskId' value = 0>
+		<input type='hidden' id='globalTaskDesc' value = ''>
+		<input type='hidden' id='globalProjectId' value = 0>
+		<input type='hidden' id='globalProjectName' value=''>
 
 	    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	    <script src='js/jquery-3.4.1.min.js'></script>

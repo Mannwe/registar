@@ -139,6 +139,7 @@ function updateTaskRecordRequest(task){
             type: 'POST',
             data: params,
             success: response => {
+                console.log(response);
                 const taskObject = JSON.parse(response); 
                 if(taskObject.message == 'error_conexion'){
                     reject('Error al conectar con la base de datos.');
@@ -168,7 +169,6 @@ function deleteTaskRecordRequest(id){
             type: 'POST',
             data: params,
             success: response => {
-                console.log(response);
                 const taskObject = JSON.parse(response); 
                 if(taskObject.message == 'error_conexion'){
                     reject('Error al conectar con la base de datos.');

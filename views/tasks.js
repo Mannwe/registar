@@ -77,7 +77,7 @@ function buildHTMLTaskRecord(taskRecords){
     document.querySelectorAll('.completedTasks').forEach(element =>{
         const id = element.id.substring(7);
         document.getElementById(element.id).addEventListener('click', function(){
-            document.getElementById('taskId').value = id;
+            document.getElementById('globalTaskId').value = id;
             completeReopenTask('P');
         });
     });
@@ -85,7 +85,7 @@ function buildHTMLTaskRecord(taskRecords){
     document.querySelectorAll('.pendingTasks').forEach(element =>{
         const id = element.id.substring(9);
         document.getElementById(element.id).addEventListener('click', function(){
-            document.getElementById('taskId').value = id;
+            document.getElementById('globalTaskId').value = id;
             completeReopenTask('C');
         });
     });
@@ -93,7 +93,7 @@ function buildHTMLTaskRecord(taskRecords){
     document.querySelectorAll('.deleteTasks').forEach(element =>{
         const id = element.id.substring(8);
         document.getElementById(element.id).addEventListener('click', function(){
-            document.getElementById('taskId').value = id;
+            document.getElementById('globalTaskId').value = id;
         });
     });
 
@@ -126,9 +126,10 @@ function getTasksByProject(projectId){
     .then(response =>{
         const taskArray = Object.values(response);  
         // Transformamos el objeto JSON en objeto JS y lo mosatramos en el DOM
-        buildHTMLTaskRecord(taskArray);  
+        buildHTMLTaskRecord(taskArray);          
     })
     .catch(message =>{
+        console.log('message', message);
         document.getElementById('taskMsg').innerHTML = '';
     });
 }
@@ -136,7 +137,7 @@ function getTasksByProject(projectId){
 function createTaskRecord(){
     // Trabajaremos con un objeto js para la tarea
     const task = {
-        projectId: document.getElementById('taskProjectId').value,
+        projectId: document.getElementById('globalProjectId').value,
         id: 0,
         description: document.getElementById('taskDescription').value,
         status: 'P'
@@ -155,6 +156,7 @@ function createTaskRecord(){
                         </button>
                     </div>`;
                 document.getElementById('taskMsg').innerHTML = DOMMessage;    
+                getTasksByProject(document.getElementById('globalProjectId').value);
                 clearTaskScreen();
             })
             .catch(message =>{
@@ -167,9 +169,6 @@ function createTaskRecord(){
                     </div>`;
                 document.getElementById('taskMsg').innerHTML = DOMMessage;    
                 clearTaskScreen();
-            })
-            .then(() => {
-                getTasksByProject(task.projectId);
             });
             
         }else{ 
@@ -198,8 +197,8 @@ function createTaskRecord(){
 function updateTaskRecord(){
     // Trabajaremos con un objeto js para la tarea
     const task = {
-        projectId: document.getElementById('taskProjectId').value,
-        id: document.getElementById('taskId').value,
+        projectId: document.getElementById('globalProjectId').value,
+        id: document.getElementById('globalTaskId').value,
         description: document.getElementById('taskDescription').value,
         status: 'P'
     }
@@ -216,6 +215,7 @@ function updateTaskRecord(){
                     </button>
                 </div>`;
             document.getElementById('taskMsg').innerHTML = DOMMessage;    
+            getTasksByProject(document.getElementById('globalProjectId').value);
             clearTaskScreen();
         })
         .catch(message =>{
@@ -228,16 +228,13 @@ function updateTaskRecord(){
                 </div>`;
             document.getElementById('taskMsg').innerHTML = DOMMessage;    
             clearTaskScreen();
-        })
-        .then(() => {
-            getTasksByProject(task.projectId);
         });
     //}
 }
 
 function deleteTaskRecord(){
-    const id = document.getElementById('taskId').value;
-    const projectId = document.getElementById('taskProjectId').value;
+    const id = document.getElementById('globalTaskId').value;
+    const projectId = document.getElementById('globalProjectId').value;
     // Trabajaremos con un objeto js para la tarea
     const task = {
         id
@@ -252,6 +249,7 @@ function deleteTaskRecord(){
                 </button>
             </div>`;
         document.getElementById('taskMsg').innerHTML = DOMMessage;    
+        getTasksByProject(document.getElementById('globalProjectId').value);
         clearTaskScreen();
     })
     .catch(message =>{
@@ -265,12 +263,10 @@ function deleteTaskRecord(){
         document.getElementById('taskMsg').innerHTML = DOMMessage;    
         clearTaskScreen();
     })
-    .then(() => {
-        getTasksByProject(projectId);
-    });
+    
 }
 
-function buildHTMLProjectsMenu(projectsRecords){
+/*function buildHTMLProjectsMenu(projectsRecords){
 
     let projectsMenu = document.getElementById('taskProject');
 
@@ -283,6 +279,7 @@ function buildHTMLProjectsMenu(projectsRecords){
     projectsRecords.forEach((record, index) => {
         if(index < projectsRecords.length - 1){ // Descartamos el último elemento porque es el mensaje
           let projectOption = document.createElement("option");
+          projectOption.classList.add('_projectName');
           projectOption.text = record.name;
           projectOption.value = record.id;
           projectsMenu.appendChild(projectOption);
@@ -291,11 +288,11 @@ function buildHTMLProjectsMenu(projectsRecords){
 }
 
 function getProjectsForTasks(){
-    const user = 'Alberto';
+    const user = document.getElementById('userId').innerHTML;
     getAllProjectsRequest(user)
     .then(response =>{
         const projectsArray = Object.values(response);          
-
+        console.log('entro');
         // Transformamos el objeto JSON en objeto JS y lo mosatramos en el DOM
         buildHTMLProjectsMenu(projectsArray);  
     })
@@ -309,14 +306,14 @@ function getProjectsForTasks(){
             </div>`;
         document.getElementById('taskMsg').innerHTML = DOMMessage;
     });
-}
+}*/
 
 /*function saveTaskRecord(){
 
     // Trabajaremos con un objeto js para la tarea
     const task = {
         projectId: document.getElementById('taskProjectId').value,
-        id: document.getElementById('taskId').value,
+        id: document.getElementById('globalTaskId').value,
         description: document.getElementById('taskDescription').value,
         status: 'P'
     }
@@ -343,27 +340,16 @@ function getProjectsForTasks(){
 }*/
 
 function completeReopenTask(status){
-    const id = document.getElementById('taskId').value;
-    const projectId = document.getElementById('taskProjectId').value;
+    const id = document.getElementById('globalTaskId').value;
+    const projectId = document.getElementById('globalProjectId').value;
 
     // Buscamos la tarea para que devuelva la descripción
     findTaskRecord(id)
     .then(task =>{
         task.status = status;
         updateTaskRecordRequest(task)
-        .then(task => {
-            console.log('status en complete', status);
-            getTasksByProject(projectId);
-        })
-        .catch(message =>{
-            const DOMMessage = `
-                <div class='alert alert-danger alert-dismissible fade show mt-3' role='alert'>
-                    ${message}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>`;
-            document.getElementById('taskMsg').innerHTML = DOMMessage;    
+        .then(message => {
+            getTasksByProject(document.getElementById('globalProjectId').value);
             clearTaskScreen();
         });  
 
@@ -385,7 +371,7 @@ function editTaskRecord(id){
     .then(task =>{
         // Mostramos el resultado por pantalla
         document.getElementById('taskDescription').value = task.description;
-        document.getElementById('taskId').value = id;
+        document.getElementById('globalTaskId').value = id;
     })
     .catch(message => {
         const DOMMessage = `
@@ -399,17 +385,19 @@ function editTaskRecord(id){
     });
 }
 
-function projectSelection(){
+/*function projectSelection(){
     
     // Guardamos el id del proyecto seleccionado en el campo hidden
     const projectId = document.getElementById('taskProject').value;
-    document.getElementById('taskProjectId').value = projectId;
+    document.getElementById('globalProjectId').value = projectId;
+    document.getElementById('globalProjectId').value = 0;
+    document.getElementById('globalProjectName').value = '';
 
     getTasksByProject(projectId);
-}
+}*/
 
 function clearTaskScreen(){
-    let taskIdDOM = document.getElementById('taskId');
+    let taskIdDOM = document.getElementById('globalTaskId');
     let descriptionDOM = document.getElementById('taskDescription');
 
     //taskDescription.value = '';    
@@ -422,8 +410,19 @@ function clearTaskScreen(){
 
 function initializeTask(){
     document.getElementById("updateTask").style.display = 'none';
-    getProjectsForTasks();
-    document.getElementById('taskProject').addEventListener('change', projectSelection);
+    //getProjectsForTasks();
+
+    const projectId = document.getElementById('globalProjectId');
+    const projectName = document.getElementById('globalProjectName');
+    let taskProject = document.getElementById('taskProject');
+
+    getTasksByProject(projectId.value);
+
+    if(projectId.value != 0 && projectName.value != ''){            
+        taskProject.value = projectName.value;
+    }
+    
+    //document.getElementById('taskProject').addEventListener('change', projectSelection);
     document.getElementById('newTask').addEventListener('click', function(e){
         e.preventDefault();
         let form = e.target.form;
@@ -489,9 +488,13 @@ function loadTasksView(){
                  </div>
                  <form novalidate>
                      <div class='card-body border border-secondary'>
-                         <label for="taskProject">Proyecto:</label>
-                         <select id='taskProject' class="custom-select mb-3 _pointer"></select>
-                         <input type='hidden' id='taskProjectId'>
+                         <div class="form-group">
+                             <label for="taskProject">Proyecto:</label>
+                             <input type="text" 
+                                 class="form-control" 
+                                 id="taskProject" 
+                                 disabled>
+                         </div>
                          <div class="form-group">
                             <label for="taskDescription">Descripción:</label>
                             <input type="text" 
@@ -508,7 +511,6 @@ function loadTasksView(){
                               </button>
                           </div>
                        </div>
-                         <input type='hidden' id='taskId'>
                          <div id='taskMsg' class='my-3'></div>
                          <button id="newTask" class="btn btn-outline-success"><i class="fas fa-plus-circle"></i> Nueva</button>
                          <button id="updateTask" class="btn btn-outline-info"><i class="fas fa-edit"></i> Editar</button>

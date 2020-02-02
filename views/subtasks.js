@@ -228,7 +228,7 @@ function deleteSubtaskRecord(){
     const subtask = {
         id
     }
-    deleteTaskRecordRequest(id)
+    deleteSubtaskRecordRequest(id)
     .then(message =>{
         const DOMMessage = `
             <div class='alert alert-success alert-dismissible fade show mt-3' role='alert'>

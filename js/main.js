@@ -35,7 +35,7 @@ function setUser(){
     anchorUserId.innerHTML = '<h6><i class="fas fa-user"></i> <span id="userId">' + user.value + '</span></h6>';
 
     // Vamos a la pantalla de los proyectos
-    location.href = '#tasks';
+    location.href = '#projects';
 }
 
 function initializeMenu(){

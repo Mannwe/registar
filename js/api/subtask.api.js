@@ -158,7 +158,7 @@ function updateSubtaskRecordRequest(subtask){
     });
 }
 
-function deleteTaskRecordRequest(id){
+function deleteSubtaskRecordRequest(id){
     return new Promise((resolve, reject) =>{
         const params = {
             idDelete: id

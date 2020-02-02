@@ -27,7 +27,7 @@ if(!isset($connectionObject)){
 			
 			$connectionObject->disconnect($connection);
 
-			if($query && !is_null($query)){
+			if(!is_null($query)){
 				$query['message'] = 'ok';
 				echo json_encode($query);
 			}else{

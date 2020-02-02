@@ -7,7 +7,6 @@ const urlProjectController = 'backend/controllers/ProjectController.php';
 /****************************** CONSULTAS *****************************/
 
 function getAllProjectsRequest(userGetAll){
-
     return new Promise((resolve, reject) =>{
         const params = {
             userGetAll
@@ -23,8 +22,6 @@ function getAllProjectsRequest(userGetAll){
                 }else{
                     if (projectObjects.message == 'ok'){ 
                         resolve(projectObjects);
-                    }else{
-                        reject('Error al obtener la lista de proyectos.');
                     }
                 }
             },
@@ -102,7 +99,6 @@ function projectHasTasksRequest(idTasks){
             type: 'GET',
             data: params,
             success: response =>{
-                console.log(response);
                 const projectObject = JSON.parse(response);
                 resolve(projectObject);
             },

@@ -13,6 +13,8 @@ function buildHTMLProjectRecord(projectRecords){
             let queryRow = document.createElement('tr');
 
             let queryCell = document.createElement('th');
+            queryCell.classList.add('_projectName', '_pointer');
+            queryCell.id = 'name-' + record.id;
             let textCell = document.createTextNode(record.name);
             queryCell.appendChild(textCell);
             queryRow.appendChild(queryCell);
@@ -63,6 +65,16 @@ function buildHTMLProjectRecord(projectRecords){
             editProjectRecord(id);
         });
     });
+
+    // Evento click en la celda del nombre para abrir tareas
+    document.querySelectorAll('._projectName').forEach(element =>{
+        const id = element.id.substring(5);
+        document.getElementById(element.id).addEventListener('click', function(){
+            document.getElementById('globalProjectId').value = id;
+            document.getElementById('globalProjectName').value = element.innerHTML;
+            location.href = '#tasks';
+        });
+    });
 }
 
 function getProjects(){
@@ -75,9 +87,10 @@ function getProjects(){
         buildHTMLProjectRecord(projectsArray);  
     })
     .catch(message =>{
+        console.log(message);
         const DOMMessage = `
             <div class='alert alert-danger alert-dismissible fade show mt-3' role='alert'>
-                '${message}'
+                ${message}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -108,6 +121,7 @@ function createProjectRecord(){
                         </button>
                     </div>`;
                 document.getElementById('projectMsg').innerHTML = DOMMessage;    
+                getProjects();
                 clearProjectScreen();
             })
             .catch(message =>{
@@ -120,11 +134,7 @@ function createProjectRecord(){
                     </div>`;
                 document.getElementById('projectMsg').innerHTML = DOMMessage;    
                 clearProjectScreen();
-            })
-            .then(() => {
-                getProjects();
             });
-            
         }else{ // El registro existe, por lo que actualizamos
             const DOMMessage = `
                 <div class='alert alert-danger alert-dismissible fade show mt-3' role='alert'>
@@ -137,7 +147,6 @@ function createProjectRecord(){
         }
     })
     .catch(message => {
-        console.log(message);
         const DOMMessage = `
             <div class='alert alert-danger alert-dismissible fade show mt-3' role='alert'>
                 ${message}
@@ -283,10 +292,8 @@ function deleteProjectRecord(){
                     </button>
                 </div>`;
             document.getElementById('projectMsg').innerHTML = DOMMessage;    
-            clearProjectScreen();
-        })
-        .then(() => {
             getProjects();
+            clearProjectScreen();
         })
         .catch(message =>{
             const DOMMessage = `
@@ -328,18 +335,10 @@ function clearProjectScreen(){
 }
 
 function initializeProject(){
-    // Aplicamos la validación customzada de Bootstrap
-    /*let form = document.getElementById('projectForm');
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-          if (form.checkValidity()) {
-              setUser();
-          }
-          form.classList.add('was-validated');
-    }, false);*/
-
     document.getElementById("updateProject").style.display = 'none';
     getProjects();
+
+    // Aplicamos la validación customizada de Bootstrap
     document.getElementById('newProject').addEventListener('click', function(e){
         e.preventDefault();
         let form = e.target.form;
