@@ -16,7 +16,7 @@ class TaskModel {
 	function getAllTasksByProject($taskProjectId){
 		$tasks = null;
 		if(isset($this->connection)){
-			$query = "SELECT * FROM tareas WHERE id_proyecto = $taskProjectId";
+			$query = "SELECT * FROM tareas WHERE id_proyecto = $taskProjectId ORDER BY id DESC";
 			$exec = mysqli_query($this->connection, $query);
 
 			if($exec){

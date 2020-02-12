@@ -194,37 +194,6 @@ function updateProjectRecord(){
     });
 }
 
-/*function saveProjectRecord(){
-    // Trabajaremos con un objeto js para el proyecto
-    const project = {
-        id: document.getElementById('projectId'),
-        user: 'Alberto',
-        name: document.getElementById('projectName'),
-        description: document.getElementById('projectDescription')
-    }
-    // Primero miramos si existe el registro
-    findProjectRecordByColumn(project.user, 'nombre', project.name)
-    .then(record => {
-        if(record.message == 'nuevo_registro'){ // El registro no existe, por lo que creamos
-            createProjectRecord(project);
-            
-        }else{ // El registro existe, por lo que actualizamos
-            updateProjectRecord(project); 
-        }
-    })
-    .catch(message => {
-        const DOMMessage = `
-            <div class='alert alert-danger alert-dismissible fade show mt-3' role='alert'>
-                ${message}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>`;
-        document.getElementById('projectMsg').innerHTML = DOMMessage;
-        
-    });
-}*/
-
 function editProjectRecord(id){
     findProjectRecord(id)
     .then(project =>{

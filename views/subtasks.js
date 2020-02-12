@@ -77,7 +77,7 @@ function buildHTMLSubtaskRecord(subtaskRecords){
         const id = element.id.substring(10);
         document.getElementById(element.id).addEventListener('click', function(){
             document.getElementById('subtaskId').value = id;
-            completeReopenTask('P');
+            completeReopenSubtask('P');
         });
     });
 
@@ -85,7 +85,7 @@ function buildHTMLSubtaskRecord(subtaskRecords){
         const id = element.id.substring(12);
         document.getElementById(element.id).addEventListener('click', function(){
             document.getElementById('subtaskId').value = id;
-            completeReopenTask('C');
+            completeReopenSubtask('C');
         });
     });
 
@@ -254,6 +254,33 @@ function deleteSubtaskRecord(){
     });
 }
 
+function completeReopenSubtask(status){
+    const id = document.getElementById('subtaskId').value;
+    const projectId = document.getElementById('globalTaskId').value;
+
+    // Buscamos la tarea para que devuelva la descripción
+    findSubtaskRecord(id)
+    .then(subtask =>{
+        subtask.status = status;
+        updateSubtaskRecordRequest(subtask)
+        .then(message => {
+            getSubtasksByTask(document.getElementById('globalTaskId').value);
+            clearSubtaskScreen();
+        });  
+
+    })    
+    .catch(message => {
+        const DOMMessage = `
+            <div class='alert alert-danger alert-dismissible fade show mt-3' role='alert'>
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>`;
+        document.getElementById('taskMsg').innerHTML = DOMMessage;
+    });    
+}
+
 function editSubtaskRecord(id){
     findSubtaskRecord(id)
     .then(subtask =>{
@@ -341,7 +368,7 @@ function loadSubtasksView(){
     let applicationView = document.getElementById('appView');
     let htmlView =
         `<div class='container'>
-             <h3 class="text-info">
+             <h3 class="text-info mt-5">
                  ${document.getElementById("globalTaskDesc").value}
              </h3>
              <div class="card border border-0 mt-3">

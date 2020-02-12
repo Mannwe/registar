@@ -16,7 +16,7 @@ class SubtaskModel {
 	function getAllSubtasksByTask($taskId){
 		$subtasks = null;
 		if(isset($this->connection)){
-			$query = "SELECT * FROM subtareas WHERE id_tarea = $taskId";
+			$query = "SELECT * FROM subtareas WHERE id_tarea = $taskId ORDER BY id DESC";
 			$exec = mysqli_query($this->connection, $query);
 
 			if($exec){

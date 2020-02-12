@@ -17,7 +17,7 @@ class ProjectModel {
 
 		$projects = null;
 		if(isset($this->connection)){
-			$query = "SELECT * FROM proyectos WHERE usuario_proyecto = '$user'";
+			$query = "SELECT * FROM proyectos WHERE usuario_proyecto = '$user' ORDER BY id DESC";
 			$exec = mysqli_query($this->connection, $query);
 
 			if($exec){
